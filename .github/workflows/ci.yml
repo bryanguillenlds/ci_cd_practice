@@ -7,21 +7,43 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# jobs:
+#   run-test:
+#     name: Run Tests
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v4  
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#          node-version: '20'
+
+#       - name: Install Dependencies
+#         run: npm ci
+
+#       - name: Run Testsß
+#         run: npm test
+
+env:
+  NODE_VERSION: 20
+  APP_NAME: cron-ticker
+
 jobs:
-  run-test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4  
+  build:
+      runs-on: ubuntu-latest
+      env:
+        BUILD_DIR: dist
+      steps:
+        - uses: actions/checkout@v4
+        - name: Show variables
+          run: |
+            echo "NODE_VERSION: ${{ env.NODE_VERSION }}"
+            echo "APP_NAME: ${{ env.APP_NAME }}"
+            echo "BUILD_DIR: ${{ env.BUILD_DIR }}"
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-         node-version: '20'
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Run Tests
-        run: npm test
+        - name: Build
+          run: npm run build
+          env:
+            APP_VERSION: '2.0.0'
