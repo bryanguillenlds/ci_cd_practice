@@ -31,55 +31,24 @@ env:
   APP_NAME: cron-ticker
 
 jobs:
-  lint:
-    name: Lint Code
+  test: 
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
       - run: npm ci
-      - run: npm run lint
-
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    needs: lint
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - run: npm ci
-      - run: npm test
       - name: Run Tests with Coverage
         run: npm run test:coverage
 
-  build:
-    name: Build Application
-    runs-on: ubuntu-latest
-    needs: test
-    env:
-      BUILD_DIR: dist
-    steps:
-      - uses: actions/checkout@v4
-      - name: Show variables
-        run: |
-          echo "NODE_VERSION: ${{ env.NODE_VERSION }}"
-          echo "APP_NAME: ${{ env.APP_NAME }}"
-          echo "BUILD_DIR: ${{ env.BUILD_DIR }}"
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report-{{github.sha}}
+          path: coverage/
+          retention-days: 7
 
-      - name: Show Github Vars
-        run: |
-          echo "App Version: ${{ vars.APP_VERSION }}"
-          echo "Node Version: ${{ vars.NODE_VERSION }}"
-
-      - name: "Show Github Secrets"
-        run: |
-          echo "API_KEY: ${{ secrets.API_KEY }}"
-
-      - name: Build
-        run: npm run build
-        env:                                                
-          APP_VERSION: '2.0.0'
