@@ -43,6 +43,11 @@ jobs:
             echo "APP_NAME: ${{ env.APP_NAME }}"
             echo "BUILD_DIR: ${{ env.BUILD_DIR }}"
 
+        - name: Show Github Vars
+          run: |
+            echo "App Version: ${{ vars.APP_VERSION }}"
+            echo "Node Version: ${{ vars.NODE_VERSION }}"
+
         - name: Build
           run: npm run build
           env:
