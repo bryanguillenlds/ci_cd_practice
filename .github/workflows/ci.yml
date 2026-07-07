@@ -50,7 +50,7 @@ jobs:
 
         - name: "Show Github Secrets"
           run: |
-            echo "API_KEY": ${{ secrets.API_KEY }}"
+            echo "API_KEY: ${{ secrets.API_KEY }}"
 
         - name: Build
           run: npm run build
